@@ -1,16 +1,22 @@
 import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { sendHI } from './assets/handleRequests';
 import { sendfile } from './assets/handleRequests';
 import { sendquery } from './assets/handleRequests';
-import TableMenu from './TableMenu';
+import { download } from './assets/handleRequests';
+import Loader from './Loader';
 import Data from './Data';
+import Logger from './Logger';
+import Regist from './Regist';
+import "./assets/animations.css"
 function App() {
  const [file,setFile] = useState(null)
  const [table,SetTable]= useState(null)
  const [tables,setTables]= useState(null)
  const [query,setQuery] = useState(null)
  const [error,setError] = useState('')
+ const [form,setform] = useState('log')
+ const [logged,setLogged]= useState(localStorage.getItem('username')?true:false)
+ const [message,setMessage]= useState('')
  const handlefile=  (event) =>{
   setFile(event.target.files[0])
  }
@@ -30,6 +36,7 @@ function App() {
   SetTable(null)
   const formdata = new FormData();
   formdata.append("file", file);
+  formdata.append('username',localStorage.getItem('username'))
   console.log(file)
   sendfile(formdata).then((ans)=> {
     setTables(ans.data['message'])
@@ -37,13 +44,39 @@ function App() {
     console.log(ans.data)
   })
  }
+
+ const down_excel = ()=>{
+  const formdata = new FormData();
+  formdata.append('username',localStorage.getItem('username'))
+  download(formdata).then((ans)=>{
+    const url = window.URL.createObjectURL(new Blob([ans.data]))
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'data.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  })
+}
  const handlequery= ()=>{
   const formdata = new FormData();
   formdata.append("query", query);
+  formdata.append('username',localStorage.getItem('username'))
   sendquery(formdata).then((ans)=>{
     if(ans.status==200){
-      SetTable([ans.data['message'],ans.data['column']])
-      setError('')
+      if(ans.data['type']=='read'){ 
+        SetTable([ans.data['rows'],ans.data['column']])
+        setMessage(ans.data['message'])
+        setError('')
+      }
+      else{
+        console.log(Object.keys(ans.data.dataset))
+        SetTable(null)
+        setTables(Object.keys(ans.data.dataset).map((sheet)=>[sheet,ans.data.dataset[sheet]['rows'],ans.data.dataset[sheet]['columns']]))
+        setMessage(ans.data['message'])
+        setError('')
+      }
     }
     else{
       setError(ans.data['error'])
@@ -52,21 +85,17 @@ function App() {
  }
   return (
     <>
-      <div className='container text-center' style={{border:"1px solid lightgrey", marginTop:"5%",padding:"1%",borderRadius:"10px",boxShadow:"0px 4px 8px rgba(0, 0, 0, 0.7)"}}>
-        <h1 style={{marginBottom:"50px"}}>hello upload your files here</h1>
-        {!0?
+      
+      <div className='container text-center ' style={{border:"1px solid lightgrey", marginTop:"5%",padding:"1%",borderRadius:"10px",boxShadow:"0px 4px 8px rgba(0, 0, 0, 0.7)"}}>
+        {!logged?
+        form=='log'?<Logger setform={setform} setLogged={setLogged} setMessage={setMessage}/>:<Regist setform={setform} setMessage={setMessage}/>
+        :
         <>
-        <input type='text' className='form-control'  placeholder='write your queires here' style={{marginBottom:"20px"}} onChange={handleQuerychange}></input>
-        <button className='btn btn-success' style={{marginBottom:"20px"}} onClick={handlequery}>send query</button>
+        <Loader tables={tables} handleQuerychange={handleQuerychange} handleForm={handleForm} handlefile={handlefile} handlequery={handlequery} error={error} SetTable={SetTable} setLogged={setLogged} setTables={setTables} setFile={setFile} setQuery={setQuery} setError={setError}/>
+          <button className='btn btn-success' onClick={down_excel} style={{display:tables?'block':'none'}}>export excel</button>
+        
         </>
-        :null
-        }
-        <form onSubmit={handleForm}>
-          <input type='file' onChange={handlefile}></input>
-          <button type='submit' className='btn btn-primary'>submit</button>
-        </form>
-        {tables?<TableMenu tables={tables} settable={SetTable}/>:null}
-        <h1 style={{color:"red"}}>{error}</h1>
+          }
       </div>
       
       {table?
@@ -76,7 +105,9 @@ function App() {
       :
       null
     }
-      
+      <div className='container text-center form-heart' style={{border:"1px solid lightgrey", marginTop:"5%",padding:"1%",borderRadius:"10px",boxShadow:"0px 4px 8px rgba(0, 0, 0, 0.7)",width:"10%",zIndex:"3",display:message.length>0?"block":"none",position:"absolute",top:"10%"}} onAnimationEnd={()=>setMessage('')}>
+        <h3>{message}</h3>
+      </div>
     
     </>
   )

@@ -4,13 +4,13 @@ const Data = ({cols,rows}) =>{
             <table className="table">
                 <thead>
                     <tr>
-                    {cols.map((col)=><th scope="col">{col}</th>)}
+                    {cols.map((col,index)=><th scope="col" key={col+"_"+index}>{col}</th>)}
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.map((row)=>
-                    <tr scope="row">
-                        {row.map((item)=><td scope="col">{item}</td>)}
+                    {rows.map((row,index)=>
+                    <tr scope="row" key={index}>
+                        {row.map((item,sub_index)=><td scope="col" key={item+"_"+index+"_"+sub_index}>{item}</td>)}
                     </tr>
                     )}
                 </tbody>
