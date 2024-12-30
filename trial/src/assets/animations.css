@@ -13,7 +13,22 @@
         display: none; 
     }
   }
-.form-heart{
+.message-box{
     animation: show_notification 3s ease forwards;
-    
+    border: 1px solid lightgray;
+    margin-top: 5%;
+    padding: 1%;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.7);
+    width: 10%;
+    z-index: 3;
+    position: absolute;
+    top: 10%;
+}
+.form-heart{
+    border: 1px solid lightgray;
+    margin-top: 5%;
+    padding: 1%;
+    border-radius: 10px;
+    box-shadow:0px 4px 8px rgba(0, 0, 0, 0.7);
 }
