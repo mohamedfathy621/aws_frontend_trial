@@ -5,11 +5,14 @@ const Regist= ({setform,setMessage}) =>{
     const [name,setName] = useState('')
     const [sent,setSent] = useState(false)
     const handlesubmit=(event)=>{
+        const formdata = new FormData();
+        formdata.append("password", pass);
+        formdata.append('username',name)
         setSent(true)
         event.preventDefault();
         if(pass.match(/^(?=.*[A-Z])(?=.*\d).{8,}$/)&&name.match(/^[A-Za-z\s]{4,20}$/)){
         console.log(name)
-        registuser(event.target).then((ans)=>{
+        registuser(formdata).then((ans)=>{
             console.log(ans)
             if(ans.status==200){
             setform('log')

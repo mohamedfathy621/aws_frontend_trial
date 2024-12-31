@@ -1,5 +1,5 @@
 import axios from 'axios';
-const backpath='http://127.0.0.1:8000/'
+const backpath='http://exceltosql-env-4.eba-nh3jpk3j.me-south-1.elasticbeanstalk.com'
 export async  function sendHI(){
     const response = await axios.get(`${backpath}/transformer/hello`)
     return response
@@ -13,11 +13,15 @@ export async function sendquery(formdata){
     return response
 }
 export async function registuser(formdata){
-    const response = await axios.post(`${backpath}/transformer/regist`,formdata)
+    const response = await axios.post(`${backpath}/transformer/regist`,formdata,{
+        headers: { 'Content-Type': 'application/json' },
+    })
     return response
 }
 export async function login(formdata){
-    const response = await axios.post(`${backpath}/transformer/login`,formdata)
+    const response = await axios.post(`${backpath}/transformer/login`,formdata,{
+        headers: { 'Content-Type': 'application/json' },
+    })
     return response
 }
 export async function download(formdata){
