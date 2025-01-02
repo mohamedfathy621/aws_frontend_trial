@@ -1,6 +1,6 @@
 import TableMenu from "./TableMenu"
 import { refresh } from './assets/handleRequests';
-import { kickuser } from "./assets/handleRequests";
+import { kickuser,sendHI } from "./assets/handleRequests";
 const Loader=({tables,handleQuerychange,handlequery,handlefile,handleForm,SetTable,error,setLogged,setTables,setFile,setQuery,setError})=>{
     const logout=()=>{
       const formdata = new FormData();
@@ -30,7 +30,7 @@ const Loader=({tables,handleQuerychange,handlequery,handlefile,handleForm,SetTab
         <h1 style={{marginBottom:"50px"}}>hello upload your files here</h1>
         <form onSubmit={handleForm} style={{marginBottom:"10px",borderBottom:"2px solid black",paddingBottom:"20px"}}>
           <input type='file' onChange={handlefile}></input>
-          <button type='submit' className='btn btn-primary'>submit</button>
+          <button className='btn btn-primary'>submit</button>
         </form>
         <button className='btn btn-success' style={{marginRight:"20px",display:tables?"none":"inline"}} onClick={refresh_data}>load latest database</button>
         {tables?

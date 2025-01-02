@@ -1,11 +1,16 @@
 import axios from 'axios';
-const backpath='http://exceltosql-env-4.eba-nh3jpk3j.me-south-1.elasticbeanstalk.com'
+const backpath="http://127.0.0.1:3000"
+const authToken = localStorage.getItem('authToken');
+
 export async  function sendHI(){
-    const response = await axios.get(`${backpath}/transformer/hello`)
+    const response = await axios.get(`${backpath}/gatekeeper/hello`)
     return response
 }
 export async function sendfile(formdata){
-    const response = await axios.post(`${backpath}/transformer/file`,formdata)
+    console.log(authToken)
+    const response = await axios.post(`${backpath}/gatekeeper/file`,formdata,{
+        headers: {  'Authorization': `Bearer ${authToken}` }
+    })
     return response
 }
 export async function sendquery(formdata){
@@ -13,15 +18,19 @@ export async function sendquery(formdata){
     return response
 }
 export async function registuser(formdata){
-    const response = await axios.post(`${backpath}/transformer/regist`,formdata,{
+    const response = await axios.post(`${backpath}/gatekeeper/regist`,formdata,{
         headers: { 'Content-Type': 'application/json' },
     })
     return response
 }
 export async function login(formdata){
-    const response = await axios.post(`${backpath}/transformer/login`,formdata,{
-        headers: { 'Content-Type': 'application/json' },
+    const response = await axios.post(`${backpath}/gatekeeper/login`,formdata,{
+        headers: { 'Content-Type': 'application/json' }
     })
+    if (response.status === 200) {
+        const { token } = response.data['token'];
+        localStorage.setItem('authToken', token); // Save token in localStorage
+    }
     return response
 }
 export async function download(formdata){
@@ -35,6 +44,8 @@ export async function refresh(formdata){
     return response
 }
 export async function kickuser(formdata){
-    const response = await axios.post(`${backpath}/transformer/logout`,formdata)
+    const response = await axios.post(`${backpath}/gatekeeper/logout`,formdata)
     return response
 }
+
+
