@@ -1,20 +1,23 @@
 import axios from 'axios';
-const backpath="http://127.0.0.1:3000"
-const authToken = localStorage.getItem('authToken');
+const backpath="http://15.184.77.221:3000"
+
 
 export async  function sendHI(){
     const response = await axios.get(`${backpath}/gatekeeper/hello`)
     return response
 }
-export async function sendfile(formdata){
-    console.log(authToken)
+export async function sendfile(formdata,authToken){
+
     const response = await axios.post(`${backpath}/gatekeeper/file`,formdata,{
         headers: {  'Authorization': `Bearer ${authToken}` }
     })
     return response
 }
-export async function sendquery(formdata){
-    const response = await axios.post(`${backpath}/transformer/query`,formdata)
+export async function sendquery(formdata,authToken){
+    
+    const response = await axios.post(`${backpath}/gatekeeper/query`,formdata,{
+        headers: {  'Authorization': `Bearer ${authToken}` }
+    })
     return response
 }
 export async function registuser(formdata){
@@ -28,24 +31,32 @@ export async function login(formdata){
         headers: { 'Content-Type': 'application/json' }
     })
     if (response.status === 200) {
+       
         const { token } = response.data['token'];
         localStorage.setItem('authToken', token); // Save token in localStorage
     }
     return response
 }
-export async function download(formdata){
-    const response = await axios.post(`${backpath}/transformer/download`,formdata,{
+export async function download(authToken){
+ 
+    const response = await axios.get(`${backpath}/gatekeeper/download`,{
         responseType: 'blob', // Ensure response is treated as a blob
+        headers: {  'Authorization': `Bearer ${authToken}` }
     })
     return response
 }
-export async function refresh(formdata){
-    const response = await axios.post(`${backpath}/transformer/refresh`,formdata)
-    return response
-}
-export async function kickuser(formdata){
-    const response = await axios.post(`${backpath}/gatekeeper/logout`,formdata)
+export async function refresh(){
+    const authToken = localStorage.getItem('authToken');
+    const response = await axios.get(`${backpath}/gatekeeper/reload`,{
+        headers: {  'Authorization': `Bearer ${authToken}` }
+    })
     return response
 }
 
 
+export async function refresh_token(){
+    const response = await axios.get(`${backpath}/gatekeeper/refresh`,{
+        headers: {  'Authorization': `Bearer ${authToken}` }
+    })
+    return response
+}

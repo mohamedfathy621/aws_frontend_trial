@@ -11,17 +11,13 @@ const Regist= ({setform,setMessage}) =>{
         setSent(true)
         event.preventDefault();
         if(pass.match(/^(?=.*[A-Z])(?=.*\d).{8,}$/)&&name.match(/^[A-Za-z\s]{4,20}$/)){
-        console.log(name)
         registuser(formdata).then((ans)=>{
-            console.log(ans)
-            if(ans.status==200){
             setform('log')
                 setMessage(ans.data['message'])
-            }
-            else{
                 setMessage(ans.data['error'])
-            }
             event.target.reset() 
+        }).catch((error)=>{
+            setMessage(error.response.data['error'])
         })
         }
     }

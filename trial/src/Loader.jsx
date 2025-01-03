@@ -1,24 +1,22 @@
 import TableMenu from "./TableMenu"
 import { refresh } from './assets/handleRequests';
-import { kickuser,sendHI } from "./assets/handleRequests";
+import { sendHI } from "./assets/handleRequests";
 const Loader=({tables,handleQuerychange,handlequery,handlefile,handleForm,SetTable,error,setLogged,setTables,setFile,setQuery,setError})=>{
     const logout=()=>{
       const formdata = new FormData();
       formdata.append('username',localStorage.getItem('username'))
-      kickuser(formdata).then((ans)=>{
-        console.log(ans.data.message)
         localStorage.removeItem('username')
+        localStorage.removeItem('authToken')
         SetTable(null)
         setLogged(false)
         setTables(null)
         setFile(null)
         setQuery(null)
         setError('')
-      })
-      
     }
      const refresh_data= ()=>{
       const formdata = new FormData();
+      setError('')
       formdata.append('username',localStorage.getItem('username'))
       refresh(formdata).then((ans)=>{
         setTables(Object.keys(ans.data.dataset).map((sheet)=>[sheet,ans.data.dataset[sheet]['rows'],ans.data.dataset[sheet]['columns']]))

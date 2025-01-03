@@ -4,15 +4,15 @@ const Logger= ({setform,setLogged,setMessage}) =>{
     const handlesubmit=(event)=>{
             event.preventDefault();
             login(event.target).then((ans)=>{
-                if(ans.status=='200'){
+                
                     setLogged(true)
                     localStorage.setItem('username',ans.data['username'])
                     setMessage(ans.data['message'])
-                }      
-                else{
-                    setMessage(ans.data['error'])
-                }         
-                console.log(ans)})
+                  
+                        
+                }).catch((error)=>{
+                    setMessage(error.response.data['error'])  
+                })
     }
     return (
         <div>

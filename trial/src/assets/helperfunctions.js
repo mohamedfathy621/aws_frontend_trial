@@ -4,7 +4,7 @@ import { sendquery } from "./handleRequests";
 export function down_excel(){
   const formdata = new FormData();
   formdata.append('username',localStorage.getItem('username'))
-  download(formdata).then((ans)=>{
+  download(localStorage.getItem('authToken')).then((ans)=>{
     const url = window.URL.createObjectURL(new Blob([ans.data]))
     const link = document.createElement('a');
     link.href = url;
@@ -15,25 +15,26 @@ export function down_excel(){
     window.URL.revokeObjectURL(url);
   })
 }
-export function handleForm(event,file,setTables,SetTable,setError){
+export function handleForm(event,file,setTables,SetTable,setMessage,setError){
   event.preventDefault();
+  setError('')
   const fileExtension = file.name.split('.').pop().toLowerCase();
   if(fileExtension!='xlx'&&fileExtension!='xlsx'){
     setTables(null)
     SetTable(null)
-    setError("only excel files allowed")
-    console.log(fileExtension)
+    setMessage("only excel files allowed")
+    
     return
   }
   SetTable(null)
   const formdata = new FormData();
   formdata.append("file", file);
   formdata.append('username',localStorage.getItem('username'))
-  console.log(file)
-  sendfile(formdata).then((ans)=> {
+
+  sendfile(formdata,localStorage.getItem('authToken')).then((ans)=> {
     setTables(ans.data['message'])
     setError("")
-    console.log(ans.data)
+    
   })
  }
 
@@ -41,7 +42,7 @@ export function handleForm(event,file,setTables,SetTable,setError){
    const formdata = new FormData();
    formdata.append("query", query);
    formdata.append('username',localStorage.getItem('username'))
-   sendquery(formdata).then((ans)=>{
+   sendquery(formdata,localStorage.getItem('authToken')).then((ans)=>{
      if(ans.status==200){
        if(ans.data['type']=='read'){ 
          SetTable([ans.data['rows'],ans.data['column']])
@@ -49,7 +50,7 @@ export function handleForm(event,file,setTables,SetTable,setError){
          setError('')
        }
        else{
-         console.log(Object.keys(ans.data.dataset))
+       
          SetTable(null)
          setTables(Object.keys(ans.data.dataset).map((sheet)=>[sheet,ans.data.dataset[sheet]['rows'],ans.data.dataset[sheet]['columns']]))
          setMessage(ans.data['message'])
