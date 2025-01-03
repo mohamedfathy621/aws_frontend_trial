@@ -14,7 +14,7 @@ function App() {
   const expiry = tokenPayload.exp * 1000;
   const now = Date.now();
   if (expiry - now < 15 * 60 * 1000) {
-    refresh_token().then(
+    refresh_token(localStorage.getItem('authToken')).then(
       (ans)=> localStorage.setItem('authToken',ans.data.token)
     ).catch(()=>{
       setLogged('false')

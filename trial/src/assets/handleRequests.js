@@ -1,5 +1,5 @@
 import axios from 'axios';
-const backpath="http://15.184.77.221:3000"
+const backpath="http://127.0.0.1:3000"
 
 
 export async  function sendHI(){
@@ -54,8 +54,15 @@ export async function refresh(){
 }
 
 
-export async function refresh_token(){
+export async function refresh_token(authToken){
     const response = await axios.get(`${backpath}/gatekeeper/refresh`,{
+        headers: {  'Authorization': `Bearer ${authToken}` }
+    })
+    return response
+}
+export async function log_out(authToken){
+    console.log(authToken)
+    const response = await axios.get(`${backpath}/gatekeeper/logout`,{
         headers: {  'Authorization': `Bearer ${authToken}` }
     })
     return response

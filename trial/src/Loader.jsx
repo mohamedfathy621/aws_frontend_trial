@@ -1,18 +1,20 @@
 import TableMenu from "./TableMenu"
 import { refresh } from './assets/handleRequests';
-import { sendHI } from "./assets/handleRequests";
+import { sendHI,log_out } from "./assets/handleRequests";
 const Loader=({tables,handleQuerychange,handlequery,handlefile,handleForm,SetTable,error,setLogged,setTables,setFile,setQuery,setError})=>{
     const logout=()=>{
       const formdata = new FormData();
       formdata.append('username',localStorage.getItem('username'))
-        localStorage.removeItem('username')
-        localStorage.removeItem('authToken')
-        SetTable(null)
-        setLogged(false)
-        setTables(null)
-        setFile(null)
-        setQuery(null)
-        setError('')
+        log_out(localStorage.getItem('authToken')).then(()=>{
+          localStorage.removeItem('username')
+          localStorage.removeItem('authToken')
+          SetTable(null)
+          setLogged(false)
+          setTables(null)
+          setFile(null)
+          setQuery(null)
+          setError('')
+        })
     }
      const refresh_data= ()=>{
       const formdata = new FormData();

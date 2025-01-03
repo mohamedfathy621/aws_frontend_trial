@@ -13,8 +13,7 @@ const Regist= ({setform,setMessage}) =>{
         if(pass.match(/^(?=.*[A-Z])(?=.*\d).{8,}$/)&&name.match(/^[A-Za-z\s]{4,20}$/)){
         registuser(formdata).then((ans)=>{
             setform('log')
-                setMessage(ans.data['message'])
-                setMessage(ans.data['error'])
+            setMessage(ans.data['message'])
             event.target.reset() 
         }).catch((error)=>{
             setMessage(error.response.data['error'])
