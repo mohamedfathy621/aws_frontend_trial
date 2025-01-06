@@ -13,10 +13,15 @@ function App() {
   const tokenPayload = JSON.parse(atob(localStorage.getItem('authToken').split('.')[1])); // Decode JWT payload
   const expiry = tokenPayload.exp * 1000;
   const now = Date.now();
+ 
   if (expiry - now < 15 * 60 * 1000) {
     refresh_token(localStorage.getItem('authToken')).then(
-      (ans)=> localStorage.setItem('authToken',ans.data.token)
+      (ans)=> {
+        localStorage.setItem('authToken',ans.data.token)
+       
+      }
     ).catch(()=>{
+      
       setLogged('false')
       localStorage.removeItem('username')
       localStorage.removeItem('authToken')
