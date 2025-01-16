@@ -21,12 +21,12 @@ jobs:
         aws-region: me-south-1  # Replace with your S3 bucket's region
 
     - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
+      uses: actions/setup-node@v3
+      with:
           node-version: 22  # Specify the Node.js version
 
     - name: Install dependencies and build
-        run: |
+      run: |
           cd trial
           npm install
           npm run build
