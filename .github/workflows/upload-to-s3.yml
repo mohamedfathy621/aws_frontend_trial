@@ -20,6 +20,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: me-south-1  # Replace with your S3 bucket's region
 
+    - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22  # Specify the Node.js version
+
+    - name: Install dependencies and build
+        run: |
+          cd trial
+          npm install
+          npm run build
+
     - name: Sync Files to S3
       run: |
         aws s3 sync trial/dist/ s3://training-aws-s3-1 --delete
